@@ -31,6 +31,7 @@
 	"devDependencies": {
 		"@cloudflare/workers-tsconfig": "workspace:*",
 		"tsdown": "0.16.3",
-		"typescript": "catalog:default"
+		"typescript": "catalog:default",
+		"zod": "^4.4.3"
 	}
 }
