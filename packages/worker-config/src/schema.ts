@@ -24,13 +24,13 @@ const TriggerSchema = z.discriminatedUnion("type", [
 	}),
 	z.object({
 		type: z.literal("queue"),
+		deadLetterQueue: z.string().optional(),
 		maxBatchSize: z.number().optional(),
 		maxBatchTimeout: z.number().optional(),
-		maxRetries: z.number().optional(),
-		deadLetterQueue: z.string().optional(),
 		maxConcurrency: z.number().nullable().optional(),
-		visibilityTimeoutMs: z.number().optional(),
+		maxRetries: z.number().optional(),
 		retryDelay: z.number().optional(),
+		visibilityTimeoutMs: z.number().optional(),
 	}),
 	z.object({
 		type: z.literal("scheduled"),
@@ -223,7 +223,7 @@ const BindingSchema = z.union([
 	z.object({ type: z.literal("text"), value: z.string() }),
 	z.object({
 		type: z.custom<`unsafe-${string}`>(
-			(val) => typeof val === "string" && val.startsWith("unsafe-")
+			(value) => typeof value === "string" && value.startsWith("unsafe-")
 		),
 	}),
 	z.object({
@@ -277,23 +277,23 @@ const ExportSchema = z.discriminatedUnion("type", [
 
 export const ConfigSchema = z.object({
 	name: z.string().optional(),
+	accountId: z.string().optional(),
+	entrypoint: z.string().optional(),
 	compatibilityDate: z.string().optional(),
 	compatibilityFlags: z.array(z.string()).optional(),
-	entrypoint: z.string().optional(),
-	accountId: z.string().optional(),
 	assets: AssetsSchema.optional(),
 	domains: z.array(z.string()).optional(),
 	triggers: z.array(TriggerSchema).optional(),
 	tailConsumers: z.array(TailConsumerSchema).optional(),
-	limits: LimitsSchema.optional(),
-	firstPartyWorker: z.boolean().optional(),
-	logpush: z.boolean().optional(),
-	placement: PlacementSchema.optional(),
-	observability: ObservabilitySchema.optional(),
 	cache: CacheSchema.optional(),
-	complianceRegion: z.enum(["public", "fedramp-high"]).optional(),
+	placement: PlacementSchema.optional(),
+	limits: LimitsSchema.optional(),
+	logpush: z.boolean().optional(),
+	observability: ObservabilitySchema.optional(),
 	workersDev: z.boolean().optional(),
 	previewUrls: z.boolean().optional(),
+	complianceRegion: z.enum(["public", "fedramp-high"]).optional(),
+	firstPartyWorker: z.boolean().optional(),
 	unsafe: UnsafeSchema.optional(),
 	// previews: TODO
 	env: z.record(z.string(), BindingSchema).optional(),
