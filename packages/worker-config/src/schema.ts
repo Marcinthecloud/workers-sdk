@@ -222,9 +222,19 @@ const BindingSchema = z.union([
 	z.object({ type: z.literal("stream"), remote: z.boolean().optional() }),
 	z.object({ type: z.literal("text"), value: z.string() }),
 	z.object({
-		type: z.custom<`unsafe-${string}`>(
-			(value) => typeof value === "string" && value.startsWith("unsafe-")
-		),
+		type: z.literal("unsafe"),
+		value: z.looseObject({
+			type: z.string(),
+			dev: z
+				.object({
+					plugin: z.object({
+						package: z.string(),
+						name: z.string(),
+					}),
+					options: z.record(z.string(), z.unknown()).optional(),
+				})
+				.optional(),
+		}),
 	}),
 	z.object({
 		type: z.literal("vectorize"),
@@ -278,9 +288,9 @@ const ExportSchema = z.discriminatedUnion("type", [
 export const ConfigSchema = z.object({
 	name: z.string().optional(),
 	accountId: z.string().optional(),
-	entrypoint: z.string().optional(),
 	compatibilityDate: z.string().optional(),
 	compatibilityFlags: z.array(z.string()).optional(),
+	entrypoint: z.string().optional(),
 	assets: AssetsSchema.optional(),
 	domains: z.array(z.string()).optional(),
 	triggers: z.array(TriggerSchema).optional(),

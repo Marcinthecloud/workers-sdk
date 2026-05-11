@@ -1,5 +1,6 @@
 packages:
   - "packages/*"
+  - "packages/worker-config/examples/*"
   - "packages/vite-plugin-cloudflare/playground/*"
   - "packages/vite-plugin-cloudflare/playground"
   - "fixtures/*"

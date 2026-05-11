@@ -1,0 +1,16 @@
+{
+	"name": "@worker-config-examples/worker-b",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"generate-types": "node --experimental-strip-types generate-types.ts",
+		"check:type": "tsc"
+	},
+	"devDependencies": {
+		"@cloudflare/worker-config": "workspace:*",
+		"@cloudflare/workers-types": "catalog:default",
+		"@worker-config-examples/worker-a": "workspace:*",
+		"typescript": "catalog:default"
+	}
+}
