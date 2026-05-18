@@ -5,6 +5,8 @@ import { logger } from "../../logger";
 import { requireAuth } from "../../user";
 import { deletePipeline, getPipeline } from "../client";
 import { tryDeleteLegacyPipeline } from "./legacy-helpers";
+import { findPipelineByName } from "./resolve";
+import type { Pipeline } from "../types";
 
 export const pipelinesDeleteCommand = createCommand({
 	metadata: {
@@ -30,12 +32,14 @@ export const pipelinesDeleteCommand = createCommand({
 		const accountId = await requireAuth(config);
 		const pipelineId = args.pipeline;
 
+		let pipeline: Pipeline | undefined;
+
 		try {
-			const pipeline = await getPipeline(config, pipelineId);
+			pipeline = await getPipeline(config, pipelineId);
 
 			if (!args.force) {
 				const confirmedDelete = await confirm(
-					`Are you sure you want to delete the pipeline '${pipeline.name}' (${pipelineId})?`,
+					`Are you sure you want to delete the pipeline '${pipeline.name}' (${pipeline.id})?`,
 					{ fallbackValue: false }
 				);
 				if (!confirmedDelete) {
@@ -44,7 +48,7 @@ export const pipelinesDeleteCommand = createCommand({
 				}
 			}
 
-			await deletePipeline(config, pipelineId);
+			await deletePipeline(config, pipeline.id);
 
 			logger.log(
 				`✨ Successfully deleted pipeline '${pipeline.name}' with id '${pipeline.id}'.`
@@ -54,6 +58,28 @@ export const pipelinesDeleteCommand = createCommand({
 				error instanceof APIError &&
 				(error.code === 1000 || error.code === 2)
 			) {
+				const pipelineFromName = await findPipelineByName(config, pipelineId);
+				if (pipelineFromName) {
+					pipeline = pipelineFromName;
+					if (!args.force) {
+						const confirmedDelete = await confirm(
+							`Are you sure you want to delete the pipeline '${pipeline.name}' (${pipeline.id})?`,
+							{ fallbackValue: false }
+						);
+						if (!confirmedDelete) {
+							logger.log("Delete cancelled.");
+							return;
+						}
+					}
+
+					await deletePipeline(config, pipeline.id);
+
+					logger.log(
+						`✨ Successfully deleted pipeline '${pipeline.name}' with id '${pipeline.id}'.`
+					);
+					return;
+				}
+
 				const deletedFromLegacy = await tryDeleteLegacyPipeline(
 					config,
 					accountId,
