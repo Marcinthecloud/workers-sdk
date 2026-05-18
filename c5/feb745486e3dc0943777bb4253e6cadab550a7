@@ -1,0 +1,27 @@
+.changeset/stream-schema-export.md
+  61e71c819d05cc9a 5,9
+.changeset/r2-sql-auth-docs-url.md
+  61e71c819d05cc9a 5
+.changeset/stream-export-schema-flag.md
+  61e71c819d05cc9a 1-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "c5feb745486e3dc0943777bb4253e6cadab550a7",
+  "prompts": {
+    "61e71c819d05cc9a": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_1c353ecf7ffeiNCaj26TqQIfDH",
+        "model": "anthropic/claude-opus-4-6"
+      },
+      "human_author": "Marc Selwan",
+      "messages": [],
+      "total_additions": 17,
+      "total_deletions": 8,
+      "accepted_lines": 17,
+      "overriden_lines": 0
+    }
+  }
+}
